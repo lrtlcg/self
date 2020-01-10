@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>心语心愿</title>
+<link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet" 
+	type="text/css" />
+<link th:href="@{/static/css/bootstrap-table.min.css}" rel="stylesheet" 
+	type="text/css" />
+<link th:href="@{/static/css/jquery-ui.min.css}" rel="stylesheet" 
+	type="text/css" />
+<link th:href="@{/static/css/liucg.css}" rel="stylesheet" 
+	type="text/css" />
+<!--图标1，需要fonts文件夹中文件支持 引用 class='fa fa-user'-->
+<link rel="stylesheet" th:href="@{/static/css/font-awesome.min.css}">
+<!--图标2（图表类），需要fonts文件夹中文件支持 引用class='ti-volume'-->
+<link rel="stylesheet" th:href="@{/static/css/themify-icons.css}">
+<!--图标3，需要fonts文件夹中文件支持 引用class='pe-7s-eyedropper'-->
+<link rel="stylesheet" th:href="@{/static/css/pe-icon-7-filled.css}">
+<!--侧边栏菜单插件-->
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/sidebar-menu.css}">
+<script type="text/javascript" th:src="@{/static/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap-table.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap-select.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap-table-editable.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/locale/bootstrap-table-zh-CN.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/jquery-ui.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/sidebar-menu.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/liucg.js}"></script>
+<script type="text/javascript">
+	$(function(){
+		// 切换侧边栏
+	    $("#bnt").click(toggleSidebar);
+	    //侧边栏菜单伸缩
+	    $.sidebarMenu($('.sidebar-menu'));
+	    //tab初始化(id_table_init,在liucg.js中已取消,所以可以不需要)
+	    init_tab('tabs','menu_iter','menu_name');
+	});
+
+</script>
+</head>
+<body>
+<div class="liucg_header">
+
+    <!--01导航栏-->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="navbar-header">
+                        <a href="#" class="navbar-brand logo"><img src="../../img/logo.png" alt="统一门户" style="height: 30px;"></a>
+                        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <div class="navbar-brand">
+                           业务中心
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="collapse navbar-collapse navbar-responsive-collapse">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="active">
+                                <a href="#"><span class="glyphicon glyphicon-home"></span> 门户</a>
+                            </li>
+                            <li><a href="#"><span class="glyphicon glyphicon-tasks"></span> 数据中心</a></li>
+                            <li><a href="#"><span class="glyphicon glyphicon-fire"></span> 应用中心</a></li>
+                            <li class="dropdown">
+                                <a id="dLabel" role="button" data-toggle="dropdown" data-target="#"
+                                   href="javascript:;">
+                                    <span class="glyphicon glyphicon-bed"></span> 项目 <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                                    <li><a href="javascript:;">清洁能源</a></li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown-submenu">
+                                        <a tabindex="-1" href="javascript:;">管道公司</a>
+                                        <ul class="dropdown-menu">
+                                            <li><a tabindex="-1" href="javascript;">管托</a></li>
+                                            <li class="divider"></li>
+                                            <li><a tabindex="-1" href="javascript;">管道</a></li>
+                                            <li class="divider"></li>
+                                            <li class="dropdown-submenu">
+                                                <a href="#">管线</a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="javascript:;">华中</a></li>
+                                                    <li><a href="javascript:;">华东</a></li>
+                                                    <li><a href="javascript:;">华南</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown-submenu">
+                                        <a tabindex="-1" href="javascript:;">压力容器</a>
+                                        <ul class="dropdown-menu">
+                                            <li><a tabindex="-1" href="javascript:;">江宁</a></li>
+                                            <li class="divider"></li>
+                                            <li class="dropdown-submenu">
+                                                <a href="javascript:;">江北</a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="javascript:;">周云峰</a></li>
+                                                    <li><a href="javascript:;">杨中秋</a></li>
+                                                    <li><a href="javascript:;">周陈波</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li style="width: 30%;">
+                                <div class="input-group" style="margin-top: 10px;" >
+                                    <input type="text" class="form-control" placeholder="输入产品关键字" aria-describedby="basic-addon" >
+                                    <span class="input-group-addon" id="basic-addon1">
+							<span class='glyphicon glyphicon-search'></span>
+						</span>
+                                </div>
+                            </li>
+
+                            <li class="dropdown">
+                                <a href="##" data-toggle="dropdown" class="dropdown-toggle"><span class="glyphicon glyphicon-apple">更多</span> <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="##">退出</a></li>
+                                    <li><a href="##">重置密码</a></li>
+                                    <li class="disabled"><a href="##">进入后台</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!--/01导航栏-->
+</div>
+<!--/header-->
+<!--center-->
+<div class="liucg_center" id="body" >
+	<!-- 侧边栏 -->
+    <div class="liucg_sidebar">
+        <ul class="sidebar-menu" id="menu">
+            <li class="sidebar-header" style="padding-right: 5px;">系统管理
+                <span class="label label-primary pull-right" id="bnt">
+                    <i class="fa fa-exchange"></i>
+                </span>
+            </li>
+			
+            <li>
+                <a href="#">
+                    <i class="fa fa-cog"></i> <span class="menu_names">用户角色</span> <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li id="menu1" class="menu_iter"><a href="#" data-id='/user/inUserList' class="menu_name"><i class="fa fa-user"></i> 用户管理</a></li>
+                    <li id="menu2" class="menu_iter"><a href="#" data-id='/role/inroleList' class="menu_name"><i class="fa fa-group"></i>角色管理</a></li>
+                </ul>
+            </li>
+              <li>
+                <a href="#">
+                    <i class="fa fa-leaf"></i> <span class="menu_names">权限设置</span> <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li id="menu3" class="menu_iter"><a href="#" data-id='/menu/inMenuList'  class="menu_name"><i class="fa fa-fire"></i> 菜单管理</a></li>
+                    <li id="menu4" class="menu_iter"><a href="#" data-id='/menu/inUserRole' class="menu_name"><i class="fa fa-key"></i>菜单权限</a></li>
+               		<li id="menu5" class="menu_iter"><a href="#" data-id='/menu/inMenuRole' class="menu_name"><i class="fa fa-twitter"></i>角色菜单</a></li>
+                </ul>
+            </li>
+             <li>
+                <a href="#">
+                    <i class="fa fa-share"></i> <span>基础设置</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li><a href="#"><i class="fa fa-tag"></i> 日历设置</a></li>
+                    <li>
+                        <a href="#"><i class="fa fa-bolt"></i> 编码设置 <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="#"><i class="fa fa-font"></i> 项目编码</a></li>
+                            <li>
+                                <a href="#"><i class="fa fa-facebook"></i> 采购编码 <i class="fa fa-angle-left pull-right"></i></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="#"><i class="fa fa-book"></i>物资编码</a></li>
+                                    <li><a href="#"><i class="fa fa-beer"></i>供商编码</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#"><i class="fa fa-cloud"></i>其它设置</a></li>
+                </ul>
+            </li>
+            <li><a href="../../documentation/index.html"><i class="fa fa-book"></i> <span>其它设置</span></a></li>
+            <li class="sidebar-header">功能管理</li>
+            <li><a href="#"><i class="fa fa-tint"></i> <span>项目管理</span></a></li>
+            <li><a href="#"><i class="fa fa-fighter-jet"></i> <span>费用管理</span></a></li>
+            <li><a href="#"><i class="fa fa-wrench"></i> <span>设计管理</span></a></li>
+            <li><a href="#"><i class="fa fa-link"></i> <span>安全管理</span></a></li>
+        </ul>
+
+    </div>
+    <!-- /侧边栏 -->
+    <!-- 主页面 -->
+    <div class="liucg_main">
+        <div id="tabs" style="height: 100%;width: 100%;">
+            <ul >
+                <li><a href="#tab1">首页</a> </li>
+            </ul>
+            <div id="tab1" style="height: 100%;width: 100%;">
+            </div>
+        </div>
+    </div>
+    <!-- /主页面 -->
+</div>
+<!--/center-->
+<!--foot-->
+<div class="liucg_foot"></div>
+<!--/foot-->
+
+</body>
+
+</html>

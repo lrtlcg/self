@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>报表列表</title>
+<link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet" 
+	type="text/css" />
+<link th:href="@{/static/css/bootstrap-table.min.css}" rel="stylesheet" 
+	type="text/css" />
+<link th:href="@{/static/css/jquery-ui.min.css}" rel="stylesheet" 
+	type="text/css" />
+<link th:href="@{/static/css/liucg.css}" rel="stylesheet" 
+	type="text/css" />
+<!--图标1，需要fonts文件夹中文件支持 引用 class='fa fa-user'-->
+<link rel="stylesheet" th:href="@{/static/css/font-awesome.min.css}">
+<!--图标2（图表类），需要fonts文件夹中文件支持 引用class='ti-volume'-->
+<link rel="stylesheet" th:href="@{/static/css/themify-icons.css}">
+<!--图标3，需要fonts文件夹中文件支持 引用class='pe-7s-eyedropper'-->
+<link rel="stylesheet" th:href="@{/static/css/pe-icon-7-filled.css}">
+<!--侧边栏菜单插件-->
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/sidebar-menu.css}">
+<script type="text/javascript" th:src="@{/static/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap-table.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap-select.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap-table-editable.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/locale/bootstrap-table-zh-CN.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/jquery-ui.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/sidebar-menu.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/liucg.js}"></script>
+<script type="text/javascript">
+	$(function(){
+		//初始化
+		id_table_init();
+	    //操作类
+	    handle_init();
+	});
+	/*表格初始花*/
+	function id_table_init(){
+		$("#table_report_list").bootstrapTable({
+			url:"/reportFile/list",
+			method:'GET',//请求方式
+			//contentType:'application/x-www-form-urlencoded', 缺失没有办法传递参数queryParams 传递page参数
+			toolbar:'#tbs_role_list', //工具按钮用哪个容器
+			striped:true,//是否显示行间隔色(默认false)
+            cache:false,//是否使用缓存,默认为true,所以一般情况下需要设置此属性(*)
+			striped:true,//是否显示行间隔色(默认false)
+			cache:false,//是否使用缓存,默认为true,所以一般情况下需要设置此属性(*)
+			pagination:true,//分页(*)
+			sortable:true,//是否启用排序(要放在具体列)?
+			sortOrder:'desc',//排序方式
+			sidePagination:'server',
+			pageNumber:1,//初始化从第一页开始
+			pageSize:10,//初始页面大小
+			pageList:[10,25,50,100],//可供选择的每页的行数(*)?
+			search:false,//启用搜索
+			strictSearch:true,
+			search:true,//启用搜索
+			showColumns:true,//是否显示所有的列(选择显示的列)
+			showRefresh:true,//是否显示刷新按钮
+			minimumCountColumns:2,//最少允许的列数
+			clickToSeclect:true,//是否启用点击选中行?
+			//height:500,//行高,如果没有设置height属性,表格自动根据记录条数设置表格高
+			uniqueId:'id',//每一行的唯一标识,一般为主键列
+			showToggle:true,//是否显示详细试图和列表试图的切换按钮
+			cardView:false,//是否显示详细视图?
+			detailView:false,//是否显示父子表(树形结构)
+			queryParams:function(params){
+				var temp={
+						limit:params.limit,//页面大小
+						offset:(params.offset/params.limit)+1,//页码
+						//sort:params.sort,//排序列名
+						//sortOrder:params.order//排位命令(desc,asc)
+						//search:params.search,
+						filter:params.filter
+				}
+				return temp;
+			},
+			responseHandler:function(res){
+				return{
+					"total":res.total,
+					"rows":res.data
+				}
+			},
+			
+			columns:[
+				{
+					checkbox:true,
+					visible:true//选择复选框
+				},
+				{
+					title:'序号',
+					align:'center',
+					valign:'middle',
+					formatter:function(value,row,index){
+						return index+1;
+					}
+				},
+				{
+					title:'模块',
+					field:'mk',
+					align:'center',
+					valign:'middle'
+				},
+				{
+					title:'名称',
+					field:'name',
+					//edit:true,
+					//searchable:true,
+					sortable:true,//是否启用排序
+					sortOrder:'asc',//排序方式
+					align:'center',
+					valign:'middle'
+				},
+				{
+					title:'类型',
+					field:'type',
+					align:'center',
+					valign:'middle'
+				},
+				{
+					title:'版本',
+					field:'version',
+					align:'center',
+					valign:'middle'
+				},
+				{
+					title:'开发日期',
+					field:'devDate',
+					align:'center',
+					valign:'middle'
+				},
+				{
+					title:'开发人员',
+					field:'devHum',
+					align:'center',
+					sortable:true,
+					valign:'middle'
+				},
+				{
+					title:'所属分部',
+					field:'fb',
+					align:'center',
+					valign:'middle'
+				},
+				{
+					title:'地址',
+					field:'urlSrc',
+					align:'center',
+					valign:'middle'
+				}
+			],
+			onLoadSuccess:function(){
+				//加载成功后的代码位置
+			},
+			onDblClickRow:function(row,$element){//表格操作,双击事件
+				var id=row.id;//注意要和pojo中属性大小写一致
+				var name=row.name;
+			}
+		});
+	}
+	
+	/*用户表格初始化*/
+	function init_table_reportUser_list(reportId){
+		$("#table_reportUser_list").bootstrapTable({
+			url:"/reportUser/listByReportId?reportId="+reportId,
+			method:'GET',//请求方式
+			//contentType:'application/x-www-form-urlencoded', 缺失没有办法传递参数queryParams 传递page参数
+			toolbar:'#tbs_modal_reportUser', //工具按钮用哪个容器
+			striped:true,//是否显示行间隔色(默认false)
+            cache:false,//是否使用缓存,默认为true,所以一般情况下需要设置此属性(*)
+			striped:true,//是否显示行间隔色(默认false)
+			cache:false,//是否使用缓存,默认为true,所以一般情况下需要设置此属性(*)
+			pagination:true,//分页(*)
+			sortable:true,//是否启用排序(要放在具体列)?
+			sortOrder:'desc',//排序方式
+			sidePagination:'server',
+			pageNumber:1,//初始化从第一页开始
+			pageSize:5,//初始页面大小
+			pageList:[10,25,50,100],//可供选择的每页的行数(*)?
+			search:false,//启用搜索
+			strictSearch:true,
+			showColumns:true,//是否显示所有的列(选择显示的列)
+			showRefresh:true,//是否显示刷新按钮
+			minimumCountColumns:2,//最少允许的列数
+			clickToSeclect:true,//是否启用点击选中行?
+			//height:500,//行高,如果没有设置height属性,表格自动根据记录条数设置表格高
+			uniqueId:'id',//每一行的唯一标识,一般为主键列
+			showToggle:true,//是否显示详细试图和列表试图的切换按钮
+			cardView:false,//是否显示详细视图?
+			detailView:false,//是否显示父子表(树形结构)
+			responseHandler:function(res){
+				return{
+					"total":res.total,
+					"rows":res.data
+				}
+			},
+			
+			columns:[
+				{
+					checkbox:true,
+					visible:true//选择复选框
+				},
+				{
+					title:'序号',
+					align:'center',
+					valign:'middle',
+					formatter:function(value,row,index){
+						return index+1;
+					}
+				},
+				{
+					title:'名称',
+					field:'name',
+					//edit:true,
+					//searchable:true,
+					sortable:true,//是否启用排序
+					sortOrder:'asc',//排序方式
+					align:'center',
+					valign:'middle'
+				},
+				{
+					title:'工号',
+					field:'acc',
+					align:'center',
+					valign:'middle'
+				},
+				{
+					title:'部门',
+					field:'departmentName',
+					align:'center',
+					valign:'middle'
+				},
+				{
+					title:'岗位',
+					field:'jobTitleName',
+					align:'center',
+					valign:'middle'
+				}
+			],
+			onLoadSuccess:function(){
+				//加载成功后的代码位置
+			},
+			onDblClickRow:function(row,$element){//表格操作,双击事件
+				var id=row.id;//注意要和pojo中属性大小写一致
+				var name=row.name;
+			}
+		});
+	}
+	
+	/*用户权限表*/
+	function table_user_list_init(){
+		$("#table_user_list").bootstrapTable({
+			url:"/user/listbyParam",
+			method:'GET',//请求方式
+			striped:true,//是否显示行间隔色(默认false)
+            cache:false,//是否使用缓存,默认为true,所以一般情况下需要设置此属性(*)
+			striped:true,//是否显示行间隔色(默认false)
+			cache:false,//是否使用缓存,默认为true,所以一般情况下需要设置此属性(*)
+			pagination:true,//分页(*)
+			sortable:true,//是否启用排序(要放在具体列)?
+			sortOrder:'asc',//排序方式
+			sidePagination:'server',
+			pageNumber:1,//初始化从第一页开始
+			pageSize:5,//初始页面大小
+			pageList:[10,25,50,100],//可供选择的每页的行数(*)?
+			search:true,//启用搜索
+			strictSearch:true,
+			showColumns:true,//是否显示所有的列(选择显示的列)
+			showRefresh:true,//是否显示刷新按钮
+			minimumCountColumns:2,//最少允许的列数
+			clickToSeclect:true,//是否启用点击选中行?
+			//height:500,//行高,如果没有设置height属性,表格自动根据记录条数设置表格高
+			uniqueId:'id',//每一行的唯一标识,一般为主键列
+			showToggle:true,//是否显示详细试图和列表试图的切换按钮
+			cardView:false,//是否显示详细视图?
+			detailView:false,//是否显示父子表(树形结构)
+			queryParams:function(params){
+				var temp={
+						limit:params.limit,//页面大小
+						offset:(params.offset/params.limit)+1,//页码
+						//sort:params.sort,//排序列名
+						//sortOrder:params.order//排位命令(desc,asc)
+						search:params.search,
+						filter:params.filter
+				}
+				return temp;
+			},
+			responseHandler:function(res){
+				return{
+					"total":res.total,
+					"rows":res.data
+				}
+			},
+			
+			columns:[
+				{
+					checkbox:true,
+					visible:true//选择复选框
+				},
+				{
+					title:'序号',
+					align:'center',
+					valign:'middle',
+					formatter:function(value,row,index){
+						return index+1;
+					}
+				},
+				{
+					title:'姓名',
+					field:'name',
+					//edit:true,
+					//searchable:true,
+					sortable:true,//是否启用排序
+					sortOrder:'asc',//排序方式
+					align:'center',
+					valign:'middle'
+				},
+				{
+					title:'帐号',
+					field:'acc',
+					align:'center',
+					valign:'middle'
+				},
+				{
+					title:'部门',
+					field:'departmentName',
+					align:'center',
+					valign:'middle'//,
+					//formatter:dateFormatter
+				},
+				{
+					title:'岗位',
+					field:'jobTitleName',
+					align:'center',
+					valign:'middle'
+				}
+			],
+			onLoadSuccess:function(){
+				//加载成功后的代码位置
+			},
+			onDblClickRow:function(row,$element){//表格操作,双击事件
+				var id=row.id;//注意要和pojo中属性大小写一致
+				var name=row.name;
+			}
+		});
+	}
+/********************操作类****************************/
+ handle_init=function(){
+	//1 进入增加页面
+	handle_tbs_report_list_add();
+	//2 新增保存report
+	handle_mb_report_add();
+	//3 进入编辑
+	handel_tbs_report_list_edit();
+	//5 删除
+	handle_tbs_report_list_del();
+	//6 进入设置页面  
+	handle_tbs_report_list_set();
+	//10 关闭设置页面,清空设置页面id,刷新页面
+	handel_modal_user();
+	//7 进入新增用户权限
+	handel_tbs_modal_reportUser_add();
+	//8 新增用户权限保存
+	handle_mb_user_add();
+	//9 删除报表用户权限
+	handle_tbs_modal_reportUser_del();
+}
+//1 进入增加页面
+handle_tbs_report_list_add=function(){
+	$("#tbs_report_list_add").click(function(){
+		$("#modal_report_add").modal("toggle");
+	});
+}
+//2 新增保存report
+handle_mb_report_add=function(){
+	$("#mb_report_add").click(function(){
+		 $.ajax({
+				type:'post',
+				dataType:'html',
+				url:'/reportFile/addReportFile',
+				data:$('#mf_report_add').serialize(),
+				success:function(data){//alert(data);
+						// 隐藏modal
+						$('#modal_report_add').modal('hide');
+						//实现bootstrap table页面刷新
+						$('#table_report_list').bootstrapTable('refresh');
+				},
+				error:function(data){
+					alert("数据错误,请联系管理员");
+				}
+		});
+	});
+}
+//3 进入编辑
+handel_tbs_report_list_edit=function(){
+	$("#tbs_report_list_edit").click(function(){
+		var ids=gtSelect('table_report_list');
+		if(ids.length==0 || ids.length>1){
+			alert('亲,编辑需要一条数据!');
+			return false;
+		}
+		//请求服务器,显示数据,打开modal
+		$.ajax({
+			type:'get',
+			url:'/reportFile/getReportFileById?id='+ids,
+			success:function(data){
+				//复制
+				$('#modal_report_add').find('#id').val(data.msg.id);
+				$('#modal_report_add').find('#name').val(data.msg.name);
+				$('#modal_report_add').find('#type').val(data.msg.type);
+				$('#modal_report_add').find('#version').val(data.msg.version);
+				$('#modal_report_add').find('#devDate').val(data.msg.devDate);
+				$('#modal_report_add').find('#devHum').val(data.msg.devHum);
+				$('#modal_report_add').find('#fb').val(data.msg.fb);
+				$('#modal_report_add').find('#mk').val(data.msg.mk);
+				$('#modal_report_add').find('#urlSrc').val(data.msg.urlSrc);
+			}
+		});
+		$("#modal_report_add").modal("toggle");//打开页面
+	});
+}
+//5 删除
+handle_tbs_report_list_del=function(){
+	$("#tbs_report_list_del").click(function(){
+		//获取id
+		var ids=gtSelect('table_report_list');
+		if(ids.length==0){
+			alert("选择项为空,请重新选择");
+			return false;
+		}
+		$.ajax({
+			type:'get',
+			url:'/reportFile/delReportFileByids?ids='+ids,
+			success:function(data){
+				//实现bootstrap table页面刷新
+				$('#table_report_list').bootstrapTable('refresh');
+			}
+		});
+	});
+}
+//6 进入设置页面
+handle_tbs_report_list_set=function(){
+	$("#tbs_report_list_set").click(function(){
+		//1获取点击的report id
+		var ids=gtSelect('table_report_list');
+		if(ids.length==0 || ids.length>1){
+			alert('亲,编辑需要一条数据!');
+			return false;
+		}
+		//2传到后台,获取该报表有哪些人有权限-初始化u用户表格table_reportUser_list
+		$("#modal_user").find("#reportId").val(ids);//将reportid 保存,用于授权保存过程
+		//alert(ids);
+		init_table_reportUser_list(ids);
+	
+		//3打开页面
+		$("#modal_reportUser").modal('toggle');
+	});
+}
+//7 进入报表用户权限编辑页面
+handel_tbs_modal_reportUser_add=function(){
+	$("#tbs_modal_reportUser_add").click(function(){
+		//1 记录报表id
+		//alert($("#modal_user").find("#reportId").val());
+		//2 初始化用户权限表格
+		table_user_list_init();
+		// 3 进入用户权限页面
+		$("#modal_user").modal("toggle");
+	});
+}
+// 10 关闭设置页面,清空缓存
+handel_modal_user=function(){
+	$("#modal_reportUser").on('hide.bs.modal',function(){
+		$("#modal_user").find("#reportId").val();
+		$('#table_reportUser_list').bootstrapTable('destroy');
+		$('#table_report_list').bootstrapTable('refresh');//销毁上一记录,重新加载
+	});
+}
+//8 新增用户权限保存
+handle_mb_user_add=function(){
+	$('#mb_user_add').click(function(){
+		var reportId=$("#modal_user").find("#reportId").val();
+		var userids=gtSelect('table_user_list');
+		$.ajax({
+			type:'get',
+			url:'/reportUser/setReportUser/?reportId='+reportId+'&userids='+userids,
+			success:function(data){
+				$('#table_reportUser_list').bootstrapTable('refresh');	
+				alert('保存成功!');
+			},
+			error:function(){
+				alert(保存失败);
+			}
+		});
+	});
+}
+//9 删除用户权限
+handle_tbs_modal_reportUser_del=function(){
+	$('#tbs_modal_reportUser_del').click(function(){
+		var ids=gtSelect('table_reportUser_list');
+		if(ids.length==0){
+			alert("选择项为空,请重新选择");
+			return false;
+		}
+		$.ajax({
+			type:'get',
+			url:'/reportUser/delByid?reportUserIds='+ids,
+			success:function(data){
+				//alert('#sss');
+				$('#table_reportUser_list').bootstrapTable('refresh');	
+			},
+			error:function(data){
+				alert(data.msg);
+			}
+		});
+	});
+};
+/*****************************工具类********************************************/
+	//页面选择
+	function gtSelect(selects){//多选
+	    var rows = $("#"+selects).bootstrapTable('getSelections');
+	    var ids=[];
+	    var len=rows.length;
+	    for(var i=0;i<len;i++){
+	    	ids.push(rows[i].id);
+	    }
+	   // alert(ids);
+	    return ids;
+	}
+</script>
+</head>
+<body>
+<!--center-->
+<table id="table_report_list" class="table table-striped table-bordered table-hover"></table>
+<!--/center-->
+<!-- 其它代码-表格工具条 -->
+<div id="tbs_role_list" class="btn-group">
+    <button type="button" id="tbs_report_list_add" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>新增</button>
+    <button type="button" id="tbs_report_list_edit" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span>编辑</button>
+    <button type="button" id="tbs_report_list_del" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span>删除</button>
+    <button type="button" id="tbs_report_list_set" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span>设置</button>
+</div>
+</body>
+<!-- 弹出框 增加reportFile -->
+<div class="modal" id="modal_report_add">
+    <div class="modal-dialog">
+        <div class="modal-content">
+	        <form  id='mf_report_add'>
+	            <div class="modal-header">
+	                <button class="close" type="button" data-dismiss="modal">
+	                    <span>&times;</span>
+	                </button>
+	                <h4 class="modal-title">设置</h4>
+	            </div>
+	            <div class="modal-body">
+	           		 <div class="row form-group">
+		                <label class="control-label col-sm-2" for="code">模块</label>
+		                <div class="col-sm-6">
+		                	<div class="form-group">
+					                <select class="form-control" id="mk" name="mk">
+					                    <option value="OA">OA</option>
+					                    <option value="ERP">ERP</option>
+					                    <option value="HER">HER</option>
+					                    <option value="MIS">MIS</option>
+					                    <option value="CAD">CAD</option>
+					                    <option value="其它">其它</option>
+					                </select>
+					        </div>
+		                </div>
+		            </div>
+	            	<div class="row form-group">
+		                <label class="control-label col-sm-2" for="code">名称</label>
+		                <div class="col-sm-6">
+		                	<input type="hidden" value="add" name='id' id='id'>
+		                    <input class="form-control" name="name" id="name" type="text"  placeholder="名称">
+		                </div>
+		            </div>
+		            <div class="row form-group">
+		                <label class="control-label col-sm-2" for="code">报表类型</label>
+		                <div class="col-sm-6">
+		                    <div class="form-group">
+					                <select class="form-control" id="type" name="type">
+					                    <option value="财务">财务</option>
+					                    <option value="采购">采购</option>
+					                    <option value="行政">行政</option>
+					                    <option value="人资">人资</option>
+					                    <option value="项目">项目</option>
+					                    <option value="设计">设计</option>
+					                    <option value="生产">生产</option>
+					                    <option value="投资">投资</option>
+					                    <option value="销售">销售</option>
+					                    <option value="信息">信息</option>
+					                    <option value="运营">运营</option>
+					                    <option value="其它">其它</option>
+					                </select>
+					        </div>
+		                </div>
+		            </div>
+		            <div class="row form-group">
+		                <label class="control-label col-sm-2" for="code">版本</label>
+		                <div class="col-sm-6">
+		                    <input class="form-control" name="version" id="version" type="text"  placeholder="版本">
+		                </div>
+		            </div>
+		             <div class="row form-group">
+		                <label class="control-label col-sm-2" for="code">开发日期</label>
+		                <div class="col-sm-6">
+		                    <input class="form-control" name="devDate" id="devDate" type="text"  placeholder="开发日期">
+		                </div>
+		            </div>
+		             <div class="row form-group">
+		                <label class="control-label col-sm-2" for="code">开发人员</label>
+		                <div class="col-sm-6">
+		                    <input class="form-control" name="devHum" id="devHum" type="text"  placeholder="开发人员">
+		                </div>
+		            </div>
+		            <div class="row form-group">
+		                <label class="control-label col-sm-2" for="code">所属分部</label>
+		                  <div class="col-sm-6">
+		                	<div class="form-group">
+					                <select class="form-control" id="fb" name="fb">
+					                    <option id="集团">集团</option>
+					                    <option value="集团/事业部">集团/事业部</option>
+					                    <option value="事业部">事业部</option>
+					                    <option value="压力">压力</option>
+					                    <option value="管道">管道</option>
+					                    <option value="工程">工程</option>
+					                    <option value="清洁">清洁</option>
+					                    <option value="清洁-高阳">清洁-高阳</option>
+					                    <option value="清洁-全椒">清洁-全椒</option>
+					                    <option value="清洁-涟水">清洁-涟水</option>
+					                    <option value="清洁-新源">清洁-新源</option>
+					                    <option value="清洁-新泰">清洁-新泰</option>
+					                    <option value="清洁-永兴">清洁-永兴</option>
+					                    <option value="圣诺">圣诺</option>
+					                    <option value="阳光院">阳光院</option>
+					                </select>
+					        </div>
+		                </div>
+		            </div>
+	            	<div class="row form-group">
+		                <label class="control-label col-sm-2" for="code">报表地址</label>
+		                <div class="col-sm-6">
+		                    <input class="form-control" name="urlSrc" id="urlSrc" type="text"  placeholder="报表地址">
+		                </div>
+		            </div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	                <button type="button" class="btn btn-primary" id="mb_report_add">保存</button>
+	            </div>
+	        </form>
+        </div>
+    </div>
+</div>
+<!-- /弹出框 增加reportFile -->
+<!-- 弹出框 增加reportUser -->
+<div class="modal" id="modal_reportUser">
+    <div class="modal-dialog">
+        <div class="modal-content">
+	        <form  id='mf_user_add'>
+	            <div class="modal-header">
+	                <button class="close" type="button" data-dismiss="modal">
+	                    <span>&times;</span>
+	                </button>
+	                <h4 class="modal-title">设置</h4>
+	            </div>
+	            <div class="modal-body">
+	            	<table id="table_reportUser_list" class="table table-striped table-bordered table-hover"></table>
+	             </div>
+	         </form>
+        </div>
+    </div>
+</div>
+<!-- /弹出框 增加reportUser -->
+<!-- 工具条2 -->
+<div id="tbs_role_list" class="btn-group" style="top: 10000px;">
+<div id="tbs_modal_reportUser" class="btn-group">
+     <button type="button" id="tbs_modal_reportUser_add" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>新增权限</button>
+  	 <button type="button" id="tbs_modal_reportUser_del" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span>删除权限</button>
+    </div>
+</div>
+ <!-- 报表用户权限 -->
+ <div class="modal" id="modal_user">
+    <div class="modal-dialog">
+        <div class="modal-content">
+	        <form  id='mf_user'>
+	            <div class="modal-header">
+	                <button class="close" type="button" data-dismiss="modal">
+	                    <span>&times;</span>
+	                </button>
+	                <h4 class="modal-title">设置</h4>
+	            </div>
+	            <div class="modal-body">
+	            	<input type='hidden' id='reportId' name='reportid' value="">
+	            	<table id="table_user_list" class="table table-striped table-bordered table-hover"></table>
+	             </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	                <button type="button" class="btn btn-primary" id="mb_user_add">保存</button>
+	            </div>
+	        </form>
+        </div>
+    </div>
+</div>
+<!-- /弹出框 增加user -->
+</html>

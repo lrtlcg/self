@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>心语心愿</title>
+<link th:href="@{/static/css/styles.css}" rel="stylesheet"
+	type="text/css" />
+</head>
+<body>
+<div class="htmleaf-container">
+	<div class="wrapper">
+		<div class="container">
+			<h1 th:text="${meg}">Welcome</h1>
+					
+			<form class="form" action=""  th:object="${user}"  th:action="@{/main/login}" method="post">
+				<input type="text" placeholder="Username"   th:field="*{acc}">
+				<input type="password" placeholder="Password" th:field="*{pwd}">
+				<input type="submit" id="login-buttone">Login</input>
+			</form>
+		</div>
+		
+		<ul class="bg-bubbles">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+	</div>
+</div>
+
+<script type="text/javascript" th:src="@{/static/js/jquery.min.js}"></script>
+<script>
+$('#login-button').click(function (event) {
+	event.preventDefault();
+	$('form').fadeOut(500);
+	$('.wrapper').addClass('form-success');
+});
+</script>
+
+<div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';color:#000000">
+<h1>数据管理系统</h1>
+</div>
+</body>
+</html>

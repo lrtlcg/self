@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>页面结构显示</title>
+<link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet" 
+	type="text/css" />
+<link th:href="@{/static/css/bootstrap-table.min.css}" rel="stylesheet" 
+	type="text/css" />
+<link th:href="@{/static/css/jquery-ui.min.css}" rel="stylesheet" 
+	type="text/css" />
+<link th:href="@{/static/css/liucg.css}" rel="stylesheet" 
+	type="text/css" />
+<!--图标1，需要fonts文件夹中文件支持 引用 class='fa fa-user'-->
+<link rel="stylesheet" th:href="@{/static/css/font-awesome.min.css}">
+<!--图标2（图表类），需要fonts文件夹中文件支持 引用class='ti-volume'-->
+<link rel="stylesheet" th:href="@{/static/css/themify-icons.css}">
+<!--图标3，需要fonts文件夹中文件支持 引用class='pe-7s-eyedropper'-->
+<link rel="stylesheet" th:href="@{/static/css/pe-icon-7-filled.css}">
+<!--侧边栏菜单插件-->
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/sidebar-menu.css}">
+<script type="text/javascript" th:src="@{/static/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap-table.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap-select.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap-table-editable.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/locale/bootstrap-table-zh-CN.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/jquery-ui.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/sidebar-menu.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/liucg.js}"></script>
+<script type="text/javascript">
+	$(function(){
+		// 切换侧边栏
+	    $("#bnt").click(toggleSidebar);
+	    //侧边栏菜单伸缩
+	    $.sidebarMenu($('.sidebar-menu'));
+	    //tab初始化
+	    init_tab('tabs','menu_iter','menu_name','id_table_init');
+	   //modal类操作
+	    tool_modal_edit();
+	   //modal保存
+	    tool_modal_save();
+	    
+	});
+	/*表格初始花*/
+	function id_table_init(){
+		$("#id_tab").bootstrapTable({
+			url:"/userRole/get_table_user_test",
+			method:'GET',//请求方式
+			toolbar:'#table_tool',
+			//contentType:'application/x-www-form-urlencoded', 缺失没有办法传递参数queryParams 传递page参数
+			//toolbar:'#toolbar_id', 工具按钮用哪个容器
+			striped:true,//是否显示行间隔色(默认false)
+            cache:false,//是否使用缓存,默认为true,所以一般情况下需要设置此属性(*)
+			striped:true,//是否显示行间隔色(默认false)
+			cache:false,//是否使用缓存,默认为true,所以一般情况下需要设置此属性(*)
+			pagination:true,//分页(*)
+			sortable:true,//是否启用排序(要放在具体列)?
+			sortOrder:'asc',//排序方式
+			sidePagination:'server',
+			pageNumber:1,//初始化从第一页开始
+			pageSize:10,//初始页面大小
+			pageList:[10,25,50,100],//可供选择的每页的行数(*)?
+			search:false,//启用搜索
+			strictSearch:true,
+			showColumns:true,//是否显示所有的列(选择显示的列)
+			showRefresh:true,//是否显示刷新按钮
+			minimumCountColumns:2,//最少允许的列数
+			clickToSeclect:true,//是否启用点击选中行?
+			//height:500,//行高,如果没有设置height属性,表格自动根据记录条数设置表格高
+			uniqueId:'id',//每一行的唯一标识,一般为主键列
+			showToggle:true,//是否显示详细试图和列表试图的切换按钮
+			cardView:false,//是否显示详细视图?
+			detailView:false,//是否显示父子表(树形结构)
+			/*
+			queryParams:function(params){
+				var temp={
+						rows:params.limit,//页面大小
+						page:(params.offset/params.limit)+1,//页码
+						sort:params.sort,//排序列名
+						sortOrder:params.order//排位命令(desc,asc)
+				}
+				return temp;
+			},*/
+			responseHandler:function(res){
+				return{
+					"total":res.total,
+					"rows":res.data
+				}
+			},
+			/*(选择性设置)*/
+			rowStyle: function (row, index) { //设置行的特殊样式
+                 //这里有5个取值颜色['active', 'success', 'info', 'warning', 'danger'];
+                 var strclass = "";
+                 if (index == 0) {
+                     strclass = "warning";
+                 }
+                 return { classes: strclass }
+             },
+			columns:[
+				{
+					checkbox:true,
+					visible:true//选择复选框
+				},
+				{
+					title:'序号',
+					align:'center',
+					valign:'middle',
+					formatter:function(value,row,index){
+						return index+1;
+					}
+				}/*,
+				{
+					title:'操作',
+					field:'id',
+					align:'center',
+					valign:'middle',
+					formatter:actionFormatter
+				}*/,
+				{
+					title:'姓名',
+					field:'name',
+					//edit:true,
+					//searchable:true,
+					sortable:true,//是否启用排序
+					sortOrder:'asc',//排序方式
+					align:'center',
+					valign:'middle'
+				},
+				{
+					title:'性别',
+					field:'gender',
+					align:'center',
+					valign:'middle'
+				},
+				{
+					title:'生日',
+					field:'birthday',
+					align:'center',
+					valign:'middle'//,
+					//formatter:dateFormatter
+				},
+				{
+					title:'电话',
+					field:'phone',
+					align:'center',
+					valign:'middle'
+				},
+				{
+					title:'邮箱',
+					field:'email',
+					align:'center',
+					valign:'middle',
+					formatter:emailFormatter
+				},
+				{
+					title:'微信',
+					field:'weixin',
+					align:'center',
+					valign:'middle'
+				}
+			],
+			onLoadSuccess:function(){
+				//加载成功后的代码位置
+			},
+			onLoadError:function(){
+				showTips('数据加载失败');
+			},
+			onDblClickRow:function(row,$element){//表格操作,双击事件
+				var id=row.id;//注意要和pojo中属性大小写一致
+				var name=row.name;
+				//console.info(id);
+			//	alert(id+"---"+name);
+				//EditViewById(id,'view');
+			}
+		});
+	}/*inint结束*/
+	/*init_modal_table*/
+	function init_modal_table(){
+		$("#tool_model_edit_table").bootstrapTable({
+			url:"/role/to_rolePage_table",
+			method:'GET',//请求方式
+			striped:true,//是否显示行间隔色(默认false)
+            cache:false,//是否使用缓存,默认为true,所以一般情况下需要设置此属性(*)
+			striped:true,//是否显示行间隔色(默认false)
+			cache:false,//是否使用缓存,默认为true,所以一般情况下需要设置此属性(*)
+			pagination:true,//分页(*)
+			sortable:true,//是否启用排序(要放在具体列)?
+			sortOrder:'asc',//排序方式
+			sidePagination:'server',
+			pageNumber:1,//初始化从第一页开始
+			pageSize:5,//初始页面大小
+			pageList:[10,25,50,100],//可供选择的每页的行数(*)?
+			showColumns:true,//是否显示所有的列(选择显示的列)
+			minimumCountColumns:2,//最少允许的列数
+			clickToSeclect:true,//是否启用点击选中行?
+			//height:500,//行高,如果没有设置height属性,表格自动根据记录条数设置表格高
+			uniqueId:'id',//每一行的唯一标识,一般为主键列
+			responseHandler:function(res){
+				return{
+					"total":res.total,
+					"rows":res.data
+				}
+			},
+			columns:[
+				{
+					checkbox:true,
+					visible:true//选择复选框
+				},
+				{
+					title:'序号',
+					align:'center',
+					valign:'middle',
+					formatter:function(value,row,index){
+						return index+1;
+					}
+				},
+					{
+						title:'编号',
+						field:'code',
+						align:'center',
+						valign:'middle'
+					},
+					{
+						title:'名称',
+						field:'name',
+						align:'center',
+						valign:'middle'
+					}
+				]
+		});
+	}
+	/*/init_modal_table*/
+	//获取选中的id,传到后台,可以批量设置多对多关系或者 批量删除
+	function gtSelect(){//多选
+	    var rows = $("#id_tab").bootstrapTable('getSelections');
+	    var ids=[];
+	    var len=rows.length;
+	    for(var i=0;i<len;i++){
+	    	ids.push(rows[i].id);
+	    }
+	   // alert(ids);
+	    return ids;
+	}
+	/*编辑框*/
+	tool_modal_edit=function(){
+		$("#table_tool_edit").click(function(){
+	    	
+	    	var ids=gtSelect();
+	    	if(ids.length==0 || ids.length>1){
+	    		alert("只能选择一项!");
+	    		return false;
+	    	}
+	    	$("#tool_model_edit").modal('toggle');
+	    	$("#tool_modal_edit_hidden_id").val(ids);//需要ajax赋值
+	    	init_modal_table();
+	    });
+	}
+	/*保存用户和角色的关系*/
+	tool_modal_save=function(){
+		$("#tool_add_model_save").click(function(){
+			var user_id=$("#tool_modal_edit_hidden_id").val();
+			/*获取角色列表信息*/
+			 var rows = $("#tool_model_edit_table").bootstrapTable('getSelections');
+			 var ids=[];
+			 var len=rows.length;
+			 for(var i=0;i<len;i++){
+			    	ids.push(rows[i].id);
+			  }
+			 var map={'user_id':user_id,'role_id':ids};
+			/*传至后台进行保存*/
+			$.ajax({
+				type:'POST',
+				url:'/userRole/update_user_role',
+				contentType:'application/json',
+				dataType:'json',
+				data:JSON.stringify(map),
+				success:function(data){
+					//re=eval("("+data+")");
+					alert(data.data);
+				}
+			});
+			
+		});
+	}
+</script>
+</head>
+<body>
+<div class="liucg_header">
+
+    <!--01导航栏-->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="navbar-header">
+                        <a href="#" class="navbar-brand logo"><img src="../../img/logo.png" alt="统一门户" style="height: 30px;"></a>
+                        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <div class="navbar-brand">
+                           业务中心
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="collapse navbar-collapse navbar-responsive-collapse">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="active">
+                                <a href="#"><span class="glyphicon glyphicon-home"></span> 门户</a>
+                            </li>
+                            <li><a href="#"><span class="glyphicon glyphicon-tasks"></span> 数据中心</a></li>
+                            <li><a href="#"><span class="glyphicon glyphicon-fire"></span> 应用中心</a></li>
+                            <li class="dropdown">
+                                <a id="dLabel" role="button" data-toggle="dropdown" data-target="#"
+                                   href="javascript:;">
+                                    <span class="glyphicon glyphicon-bed"></span> 项目 <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                                    <li><a href="javascript:;">清洁能源</a></li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown-submenu">
+                                        <a tabindex="-1" href="javascript:;">管道公司</a>
+                                        <ul class="dropdown-menu">
+                                            <li><a tabindex="-1" href="javascript;">管托</a></li>
+                                            <li class="divider"></li>
+                                            <li><a tabindex="-1" href="javascript;">管道</a></li>
+                                            <li class="divider"></li>
+                                            <li class="dropdown-submenu">
+                                                <a href="#">管线</a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="javascript:;">华中</a></li>
+                                                    <li><a href="javascript:;">华东</a></li>
+                                                    <li><a href="javascript:;">华南</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown-submenu">
+                                        <a tabindex="-1" href="javascript:;">压力容器</a>
+                                        <ul class="dropdown-menu">
+                                            <li><a tabindex="-1" href="javascript:;">江宁</a></li>
+                                            <li class="divider"></li>
+                                            <li class="dropdown-submenu">
+                                                <a href="javascript:;">江北</a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="javascript:;">周云峰</a></li>
+                                                    <li><a href="javascript:;">杨中秋</a></li>
+                                                    <li><a href="javascript:;">周陈波</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li style="width: 30%;">
+                                <div class="input-group" style="margin-top: 10px;" >
+                                    <input type="text" class="form-control" placeholder="输入产品关键字" aria-describedby="basic-addon" >
+                                    <span class="input-group-addon" id="basic-addon1">
+							<span class='glyphicon glyphicon-search'></span>
+						</span>
+                                </div>
+                            </li>
+
+                            <li class="dropdown">
+                                <a href="##" data-toggle="dropdown" class="dropdown-toggle"><span class="glyphicon glyphicon-apple">更多</span> <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="##">退出</a></li>
+                                    <li><a href="##">重置密码</a></li>
+                                    <li class="disabled"><a href="##">进入后台</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!--/01导航栏-->
+</div>
+<!--/header-->
+<!--center-->
+<div class="liucg_center" id="body" >
+    <div class="liucg_sidebar">
+        <ul class="sidebar-menu" id="menu">
+            <li class="sidebar-header" style="padding-right: 5px;">系统导航
+                <span class="label label-primary pull-right" id="bnt">
+                    <i class="fa fa-exchange"></i>
+                </span>
+            </li>
+			
+            <li>
+                <a href="#">
+                    <i class="glyphicon glyphicon-barcode"></i> <span class="menu_names">仪表盘</span> <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li id="menu3" class="menu_iter"><a href="#" class="menu_name"><i class="glyphicon glyphicon-alert"></i> 仪表盘 v1</a></li>
+                    <li id="menu4" class="menu_iter"><a href="#" class="menu_name"><i class="fa fa-circle-o"></i> 仪表盘 v2</a></li>
+                </ul>
+            </li>
+            <!-- 
+            <li >
+                <a href="#">
+                    <i class="fa fa-files-o"></i>
+                    <span>页面布局</span>
+                    <span class="label label-primary pull-right" >4</span>
+                </a>
+                <ul class="sidebar-submenu" style="display: none;">
+                    <li><a href="top-nav.html"><i class="fa fa-circle-o"></i> Top Navigation</a></li>
+                    <li><a href="boxed.html"><i class="fa fa-circle-o"></i> Boxed</a></li>
+                    <li><a href="fixed.html"><i class="fa fa-circle-o"></i> Fixed</a></li>
+                    <li class=""><a href="collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a>
+                    </li>
+                </ul>
+            </li>
+            <li id="menu_2">
+                <a href="#">
+                    <i  class="fa fa-th menu_img"></i> <span class="menu_name">Widgets</span>
+                    <small class="label pull-right label-info">new</small>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-pie-chart"></i>
+                    <span>Charts</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li id="menu_5" class="menu_iter"><a class="menu_name" href="#"><i class="fa fa-circle-o"></i> ChartJS</a></li>
+                    <li id="menu_6" class="menu_iter"><a class="menu_name" href="#"><i class="fa fa-circle-o"></i> Morris</a></li>
+                    <li id="menu_7" class="menu_iter"><a class="menu_name" href="#"><i class="fa fa-circle-o"></i> Flot</a></li>
+                    <li id="menu_8" class="menu_iter"><a class="menu_name" href="#l"><i class="fa fa-circle-o"></i> Inline charts</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-laptop"></i>
+                    <span>UI Elements</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li id="menu_14" class="menu_iter"><a class="menu_name" href="#"><i class="fa fa-circle-o"></i> General</a></li>
+                    <li id="menu_9" class="menu_iter"><a class="menu_name" href="#"><i class="fa fa-circle-o"></i> Icons</a></li>
+                    <li id="menu_10" class="menu_iter"><a class="menu_name" href="#"><i class="fa fa-circle-o"></i> Buttons</a></li>
+                    <li id="menu_11" class="menu_iter"><a class="menu_name" href="#"><i class="fa fa-circle-o"></i> Sliders</a></li>
+                    <li id="menu_12" class="menu_iter"><a class="menu_name" href="#"><i class="fa fa-circle-o"></i> Timeline</a></li>
+                    <li id="menu_13" class="menu_iter"><a class="menu_name" href="#"><i class="fa fa-circle-o"></i> Modals</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-edit"></i> <span>业务表单</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li id="menu_15" class="menu_iter"><a class="menu_name" href="#"><i class="fa fa-circle-o"></i> General Elements</a></li>
+                    <li id="menu_16" class="menu_iter"><a class="menu_name" href="#"><i class="fa fa-circle-o"></i> Advanced Elements</a></li>
+                    <li id="menu_17" class="menu_iter"><a class="menu_name" href="#"><i class="fa fa-circle-o"></i> Editors</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-table"></i> <span>Tables</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li><a href="../tables/simple.html"><i class="fa fa-circle-o"></i> Simple tables</a></li>
+                    <li><a href="../tables/data.html"><i class="fa fa-circle-o"></i> Data tables</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="../calendar.html">
+                    <i class="fa fa-calendar"></i> <span>Calendar</span>
+                    <small class="label pull-right label-danger">3</small>
+                </a>
+            </li>
+            <li>
+                <a href="../mailbox/mailbox.html">
+                    <i class="fa fa-envelope"></i> <span>Mailbox</span>
+                    <small class="label pull-right label-warning">12</small>
+                </a>
+            </li>
+             
+            <li>
+                <a href="#">
+                    <i class="fa fa-folder"></i> <span>Examples</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li><a href="../examples/invoice.html"><i class="fa fa-circle-o"></i> Invoice</a></li>
+                    <li><a href="../examples/profile.html"><i class="fa fa-circle-o"></i> Profile</a></li>
+                    <li><a href="../examples/login.html"><i class="fa fa-circle-o"></i> Login</a></li>
+                    <li><a href="../examples/register.html"><i class="fa fa-circle-o"></i> Register</a></li>
+                    <li><a href="../examples/lockscreen.html"><i class="fa fa-circle-o"></i> Lockscreen</a></li>
+                    <li><a href="../examples/404.html"><i class="fa fa-circle-o"></i> 404 Error</a></li>
+                    <li><a href="../examples/500.html"><i class="fa fa-circle-o"></i> 500 Error</a></li>
+                    <li><a href="../examples/blank.html"><i class="fa fa-circle-o"></i> Blank Page</a></li>
+                    <li><a href="../examples/pace.html"><i class="fa fa-circle-o"></i> Pace Page</a></li>
+                </ul>
+            </li>
+            -->
+            <li>
+                <a href="#">
+                    <i class="fa fa-share"></i> <span>Multilevel</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
+                    <li>
+                        <a href="#"><i class="fa fa-circle-o"></i> Level One <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="#"><i class="fa fa-circle-o"></i> Level Two</a></li>
+                            <li>
+                                <a href="#"><i class="fa fa-circle-o"></i> Level Two <i class="fa fa-angle-left pull-right"></i></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
+                                    <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
+                </ul>
+            </li>
+            <li><a href="../../documentation/index.html"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
+            <li class="sidebar-header">LABELS</li>
+            <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
+            <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
+            <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
+        </ul>
+
+    </div>
+    <div class="liucg_main">
+        <div id="tabs" style="height: 100%;width: 100%;">
+            <ul >
+                <li><a href="#tab1">首页</a> </li>
+            </ul>
+            <div id="tab1" style="height: 100%;width: 100%;">
+            	<!--
+               <table id="id_tab" class="table table-striped table-bordered table-hover"></table>
+            	 --> 
+            </div>
+        </div>
+    </div>
+    <div id="tab_content" style="display: none;">
+        <div class="tabs-menu3" style="height: 100%;width: 100%;background-color: #a5b2cb">
+        	<!-- 
+        	<button class="btn btn-default" id="btn_select" type="button">配置</button>
+        	-->
+        	<table id="id_tab" class="table table-striped table-bordered table-hover"></table>
+        
+        </div>
+        <div class="tabs-menu4" style="height: 100%;width: 100%;background-color: #a5b2cb"><button class="btn btn-danger">menu_3</button></div>
+        <div class="tabs-menu_5" style="height: 100%;width: 100%;background-color: greenyellow">333</div>
+    </div>
+</div>
+<!--/center-->
+<!--foot-->
+<div class="liucg_foot"></div>
+<!--/foot-->
+<!-- 其它代码-表格工具条 -->
+<div id="table_tool" class="btn-group">
+    <button type="button" id="table_tool_add" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>新增</button>
+    <button type="button" id="table_tool_edit" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span>编辑</button>
+    <button type="button" id="table_tool_del" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span>删除</button>
+</div>
+<!-- 弹出框 -->
+<div class="modal" id="tool_model_edit">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" type="button" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">编辑</h4>
+            </div>
+            <div class="modal-body">
+            	<input type="hidden" id="tool_modal_edit_hidden_id">
+            	<table id="tool_model_edit_table" class="table table-striped table-bordered table-hover"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="tool_add_model_save">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

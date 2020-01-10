@@ -1,0 +1,8 @@
+1.将[03-配置]文件夹材料复制拷贝
+2.注意点:启动时请注意 如果报以下错误
+Field userService in com.sxsj.controller.RegistLoginController required a bean of type
+
+====
+配置 启动
+@MapperScan(basePackages = {"com.liucg.dao"})
+查看 service里面是否有impl文件夹

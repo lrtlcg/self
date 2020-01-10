@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liucg.dao.ReportFileMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.liucg.pojo.ReportFile">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="type" property="type" />
+        <result column="version" property="version" />
+        <result column="devDate" property="devDate" />
+        <result column="devHum" property="devHum" />
+        <result column="fb" property="fb" />
+        <result column="mk" property="mk" />
+        <result column="urlSrc" property="urlSrc" />
+    </resultMap>
+
+</mapper>

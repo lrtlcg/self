@@ -1,0 +1,21 @@
+ 一网页内需要注意的名称命名
+ 1 菜单项 id='menu1' class='menu_iter'  class='menu_name'  ---1是数据库中id
+ 2 tabs(id='tabs',固定值)标签中的标签  id='tab1' ---1表示数据库中的id,同上面的值要相同
+ 3 tabs内容(id='tab-content')div中 标签 id='tab-menu1' --1含义同上
+ 4 div中(id='tab-menu1')(用于存放bootstap-table等页面内容) 
+ 		<table id='table_user_list'></table>
+ 5	table 的工具栏
+ 	div  id ='tbs_user_list' --tg:table buttons
+ 6  table 按钮id规范
+ 		id='tbs_user_list_add-1' ---tb:table buttons ,  1同上
+ 7  modal div的id
+ 		id='modal_user_add'
+ 8 	modal 中的form  id='mf-user'  --mf:modal form
+ 9	modal 中的提交按钮
+ 		id='mb_user_save-1'   ---1含义同上, mb:modal button
+ ==================================
+ 1 bootstrap 表格初始化
+ 2 handle_init 初始化
+ 	1 初始化工具栏 点击打开按钮
+ 	2 初始化工具提交(ajax)
+ 3 

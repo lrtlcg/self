@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liucg.dao.MenuMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.liucg.pojo.Menu">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="urlsrc" property="urlsrc" />
+        <result column="urlico" property="urlico" />
+        <result column="urllevel" property="urllevel" />
+        <result column="status" property="status" />
+        <result column="pid" property="pid" />
+    </resultMap>
+
+</mapper>

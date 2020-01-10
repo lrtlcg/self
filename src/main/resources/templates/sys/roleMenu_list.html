@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>心语心愿</title>
+<link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet"
+	type="text/css" />
+<link th:href="@{/static/css/bootstrap-table.min.css}" rel="stylesheet"
+	type="text/css" />
+<link th:href="@{/static/css/jquery-ui.min.css}" rel="stylesheet"
+	type="text/css" />
+<link th:href="@{/static/css/jquery.treegrid.css}" rel="stylesheet"
+	type="text/css" />
+<link th:href="@{/static/css/liucg.css}" rel="stylesheet"
+	type="text/css" />
+<!--图标1，需要fonts文件夹中文件支持 引用 class='fa fa-userRole'-->
+<link rel="stylesheet" th:href="@{/static/css/font-awesome.min.css}">
+<!--图标2（图表类），需要fonts文件夹中文件支持 引用class='ti-volume'-->
+<link rel="stylesheet" th:href="@{/static/css/themify-icons.css}">
+<!--图标3，需要fonts文件夹中文件支持 引用class='pe-7s-eyedropper'-->
+<link rel="stylesheet" th:href="@{/static/css/pe-icon-7-filled.css}">
+<!--侧边栏菜单插件-->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/static/css/sidebar-menu.css}">
+<script type="text/javascript" th:src="@{/static/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/static/js/bootstrap-table.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/static/js/bootstrap-select.js}"></script>
+<script type="text/javascript"
+	th:src="@{/static/js/bootstrap-table-editable.js}"></script>
+<script type="text/javascript"
+	th:src="@{/static/js/locale/bootstrap-table-zh-CN.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/jquery-ui.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/static/js/bootstrap-table-treegrid.js}"></script>
+<script type="text/javascript"
+	th:src="@{/static/js/jquery.treegrid.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/sidebar-menu.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/liucg.js}"></script>
+<script type="text/javascript">
+	$(function() {
+		id_table_init();
+		//操作类
+		handle_init();
+	});
+	/*表格初始花*/
+	function id_table_init() {
+		$("#table_roleMenu_list").bootstrapTable({
+			url : "/role/list",
+			method : 'GET',//请求方式
+			//contentType:'application/x-www-form-urlencoded', 缺失没有办法传递参数queryParams 传递page参数
+			toolbar : '#roleMenu', //工具按钮用哪个容器
+			striped : true,//是否显示行间隔色(默认false)
+			cache : false,//是否使用缓存,默认为true,所以一般情况下需要设置此属性(*)
+			striped : true,//是否显示行间隔色(默认false)
+			cache : false,//是否使用缓存,默认为true,所以一般情况下需要设置此属性(*)
+			pagination : true,//分页(*)
+			sortable : true,//是否启用排序(要放在具体列)?
+			sortOrder : 'asc',//排序方式
+			sidePagination : 'server',
+			pageNumber : 1,//初始化从第一页开始
+			pageSize : 10,//初始页面大小
+			pageList : [ 10, 25, 50, 100 ],//可供选择的每页的行数(*)?
+			search : false,//启用搜索
+			strictSearch : true,
+			showColumns : true,//是否显示所有的列(选择显示的列)
+			showRefresh : true,//是否显示刷新按钮
+			minimumCountColumns : 2,//最少允许的列数
+			clickToSeclect : true,//是否启用点击选中行?
+			//height:500,//行高,如果没有设置height属性,表格自动根据记录条数设置表格高
+			uniqueId : 'id',//每一行的唯一标识,一般为主键列
+			showToggle : true,//是否显示详细试图和列表试图的切换按钮
+			cardView : false,//是否显示详细视图?
+			detailView : false,//是否显示父子表(树形结构)
+			responseHandler : function(res) {
+				return {
+					"total" : res.total,
+					"rows" : res.data
+				}
+			},
+
+			columns : [ {
+				checkbox : true,
+				visible : true
+			//选择复选框
+			}, {
+				title : '序号',
+				align : 'center',
+				valign : 'middle',
+				formatter : function(value, row, index) {
+					return index + 1;
+				}
+			}, {
+				title : '姓名',
+				field : 'name',
+				//edit:true,
+				//searchable:true,
+				sortable : true,//是否启用排序
+				sortOrder : 'asc',//排序方式
+				align : 'center',
+				valign : 'middle'
+			}, {
+				title : '状态',
+				field : 'status',
+				align : 'center',
+				valign : 'middle'
+			} ],
+			onLoadSuccess : function() {
+				//加载成功后的代码位置
+			},
+			onDblClickRow : function(row, $element) {//表格操作,双击事件
+				var id = row.id;//注意要和pojo中属性大小写一致
+				var name = row.name;
+			}
+		});
+	}
+	/*表格初始花*/
+	function id_tableMenu_init(roleid) {
+		var $table = $("#table_menu_list");
+		$table
+				.bootstrapTable({
+					url : "/menu/listByRoleId?roleid=" + roleid,
+					method : 'GET',//请求方式
+					//toolbar:'#tbs_menu_list', //工具按钮用哪个容器
+					striped : true,//是否显示行间隔色(默认false)
+					sidePagenation : 'server',
+					idField : 'id',
+					columns : [ {
+						field : 'checks',
+						checkbox : true,
+						formatter : function(value, row, index) {
+							if (row.check == 0) {
+								//设置选中
+								return {
+									checked : true
+								};
+							} else {
+								return {
+									checked : false
+								};
+							}
+						}
+					}, {
+						field : 'name',
+						title : '名称'//,
+					//sortable: true  排序
+					}, {
+						field : 'urlsrc',
+						title : '地址'
+					}, {
+						field : 'urlico',
+						title : '图标'
+					}, {
+						field : 'urllevel',
+						title : '层级'
+					}, {
+						field : 'status',
+						title : '状态'
+					}
+
+					],
+					treeShowField : 'name',
+					parentIdField : 'pid',
+					onLoadSuccess : function(data) {
+						$table
+								.treegrid({
+									initialState : 'collapsed',//收缩
+									// initialState: 'expanded',//收缩
+									treeColumn : 1,//指明第几列数据改为树形
+									expanderExpandedClass : 'glyphicon glyphicon-triangle-bottom',
+									expanderCollapsedClass : 'glyphicon glyphicon-triangle-right',
+									onChange : function() {
+										$table.bootstrapTable('resetWidth');
+									}
+								});
+						//只展开树形的第一级节点
+						$table.treegrid('getRootNodes').treegrid('expand');
+					},
+					onCheck : function(row, el) {
+						var datas = $table.bootstrapTable('getData');
+						$(el).attr('checked', 'checked');
+						// 勾选子类
+						selectChilds('table_menu_list',datas, row, "id", "pid", true);
+						// 勾选父类
+						selectParentChecked('table_menu_list',datas, row, "id", "pid")
+					},
+
+					onUncheck : function(row) {
+						var datas = $table.bootstrapTable('getData');
+						selectChilds('table_menu_list',datas, row, "id", "pid", false);
+					}
+				});
+	}
+	/*操作类初始化*/
+	handle_init = function() {
+		//1 打开角色编辑页面
+		handle_tbs_roleMenu_list_set();
+		//2 编辑保存
+		handle_mb_roleMenu_edit();
+	}
+	//1 打开角色编辑页面
+	handle_tbs_roleMenu_list_set = function() {
+		$('#tbs_roleMenu_list_set').click(function() {
+			var ids = gtSelect('table_roleMenu_list');
+			if (ids.length == 0 || ids.length > 1) {
+				alert("请选择要设置的用户!");
+				return false;
+			}
+			//保存角色字段
+			$("#roles").val(ids);
+			//加载角色
+			id_tableMenu_init(ids);
+			//打开页面
+			$("#modal_roleMenu_edit").modal("toggle");
+		});
+	}
+	//2 编辑保存
+	handle_mb_roleMenu_edit = function() {
+		$('#mb_roleMenu_edit').click(
+				function() {
+					var roleId = gtSelect('table_roleMenu_list');
+					var menuIds = gtSelectByjs('table_menu_list');
+					//alert("menuIds:"+menuIds+" roleIds:"+roleId);
+					$.ajax({
+						type : 'get',
+						url : '/roleMenu/setRoleMenuId?roleId=' + roleId
+								+ '&menuIds=' + menuIds,
+						success : function(data) {//alert(data);alert(data.msg);
+							// 隐藏modal
+							$("#modal_roleMenu_edit").modal("hide");
+							$('#table_roleMenu_list').bootstrapTable('refresh');
+							$('#table_menu_list').bootstrapTable('refresh');
+						},
+						error : function(data) {
+							alert("数据错误,请联系管理员");
+						}
+					});
+					
+				});
+	}
+	/*****************************工具类********************************************/
+	//页面选择的id
+	function gtSelect(selects) {//多选
+		var rows = $("#" + selects).bootstrapTable('getSelections');
+		var ids = [];
+		var len = rows.length;
+		for (var i = 0; i < len; i++) {
+			ids.push(rows[i].id);
+		}
+		// alert(ids);
+		return ids;
+	}
+	//页面选择(table自带的tree,只能选到单击的行))
+	function gtSelectByjs(selects) {//多选
+		var ids = [];
+		var rows=$("#" + selects).find("input[name='btSelectItem']");
+		for(var i in rows){
+			if(rows[i].checked){
+				//console.info(rows[i]);
+				ids.push(rows[i].value);
+			}
+		}
+		return ids;
+		//console.info(rows);
+	}
+	//页面选择parent 的id
+	function gtParentSelect(selects) {//多选
+		var rows = $("#" + selects).bootstrapTable('getSelections');
+		var ids = [];
+		var len = rows.length;
+		for (var i = 0; i < len; i++) {
+			ids.push(rows[i].pid);
+		}
+		// alert(ids);
+		return ids;
+	}
+	/**
+	 * 选中父项时，同时选中子项
+	 * @param select  指定是那张表,否则勾选时 页面有的表格符合条件的都勾选了
+	 * @param datas 所有的数据
+	 * @param row 当前数据
+	 * @param id id 字段名
+	 * @param pid 父id字段名
+	 */
+	function selectChilds(select,datas, row, id, pid, checked) {
+		for ( var i in datas) {
+			if (row[id] == datas[i][pid]) {
+				$("#"+select).find("input[name='btSelectItem']").each(function(el) {
+					if ($(this).val() == datas[i][id]) {
+						//datas[i].checks=0;
+						//alert(datas[i].name);
+						$(this).attr("checked", checked);
+						$(this).prop("checked", checked);
+						selectChilds(select,datas, datas[i], id, pid, checked);
+					}
+				});
+			}
+		}
+	}
+	function selectParentChecked(select,datas, row, id, pid, checked) {
+		for ( var i in datas) {
+			if (row[pid] == datas[i][id]) {
+				$("#"+select).find("input[name='btSelectItem']").each(function(el) {
+					if ($(this).val() == datas[i][id]) {
+						//datas[i].checks=0;
+						$(this).attr("checked", checked);
+						$(this).prop("checked", checked);
+						selectParentChecked(select,datas, datas[i], id, pid, checked);
+					}
+				});
+			}
+		}
+	}
+</script>
+</head>
+<body>
+	<!--center-->
+	<table id="table_roleMenu_list"
+		class="table table-striped table-bordered table-hover"></table>
+	<!--/center-->
+
+	<!-- 其它代码-表格工具条 -->
+	<div id="roleMenu" class="btn-group">
+		<button type="button" id="tbs_roleMenu_list_set"
+			class="btn btn-default">
+			<span class="glyphicon glyphicon-edit"></span>设置菜单
+		</button>
+	</div>
+	<!-- 弹出框 ajax编辑-->
+	<div class="modal" id="modal_roleMenu_edit">
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button class="close" type="button" data-dismiss="modal">
+						<span>&times;</span>
+					</button>
+					<h4 class="modal-title">角色列表</h4>
+				</div>
+				<div class="modal-body">
+					<input value="" id="roles" name="roles" type="hidden">
+					<table id="table_menu_list"
+						class="table table-striped table-bordered table-hover"></table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" id="mb_roleMenu_edit">保存</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<!-- /弹出编辑款 -->
+</body>
+
+</html>

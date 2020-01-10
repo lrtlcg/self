@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<style type="text/css">
+    .item-level{margin-left: 40px;}
+</style>
+<body>
+
+<!--  
+<div class="box">
+	<th:block th:include="recursive:tree(${items},1)"></th:block>
+</div>
+
+<div th:fragment="tree(its,level)">
+    <div class="item" th:class="${level eq 1 ? 'item':'item item-level'}" th:each="it:${its}" >
+        <label th:text="${it.name}"></label>
+        <div th:unless="${#lists.isEmpty(it.children)}" th:include="this::tree(${it.children},${level+1})"></div>
+         
+    </div>
+</div>
+-->
+<ul>
+	<li th:each="list: ${listMenu}">
+      <a href="javascript:;" th:if="${list.pid==0}">
+              <i class="iconfont">&#xe6b4;</i>
+               <cite th:text="${list.name}"></cite>
+                <i class="iconfont nav_right">&#xe697;</i>
+      </a>
+       <ul class="sub-menu" th:each="listMenuTreeNode : ${list.children}">
+        <li th:if="${listMenuTreeNode.pid!=0}">
+          <a th:href="${listMenuTreeNode.urlsrc}"  >
+                    <i class="iconfont">&#xe6a7;</i>
+                              <cite th:text="${listMenuTreeNode.name}"></cite>
+                     </a>
+          </li>
+        </ul>
+</li>
+</ul>
+</body>
+</html>
