@@ -1,0 +1,113 @@
+#####################################################
+#热部署
+#####################################################
+spring:
+  devtools:
+    restart:
+      enabled: true # 热部署生效
+      additional-paths:
+      - src/main/java ##设置重启的目录，添加那个目录的文件需要restart(热部署只重启这一部分，jar包不重启)
+#      exclude: static/**,public/** #排除哪个目录的文件不需要restart（热启动）
+####################################################################
+# 基本网页配置
+####################################################################
+  mvc:
+    static-path-pattern: /static/** # 访问请求的前缀
+# 静态文件的地址
+# 文件地址（这个默认是静态文件路径）
+  resources:
+    static-locations:
+    - classpath:/static/
+####################################################################
+# thymeleaf配置
+####################################################################
+  thymeleaf:
+    prefix: classpath:/templates/ # 网页路径
+    suffix: .html # 网页模板后缀
+    mode: HTML5
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    cache: false # 关闭缓存，即使刷新，上线生产环境需要改成true
+####################################################################
+# redis配置
+####################################################################
+  redis:
+    database: 3 # redis 数据库索引（默认是0）
+    host: 127.0.0.1 # redis服务器地址
+    port: 6379 # redis服务器端口（默认：6379）
+    password:  # redis服务器链接密码（默认空）
+    jedis:
+      pool:
+        max-active: 1000 # redis连接池最大连接数（使用负数表示无限制）
+        max-wait: 1 # redis最大阻塞等待时间（使用负数表示无限制）
+        max-idle: 10 # 连接池中最大空闲连接数
+        min-idle: 2 # 连接池中最小空闲连接数
+    timeout: 5000 # 连接超时时间（毫秒）
+###############################################################
+#mysql配置
+###############################################################
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver # 驱动
+    url: jdbc:mysql://localhost:3306/self?useSSl=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8 # mysql地址
+    username: root # mysql用户名
+    password: saadmin # mysql密码
+###############################################################
+# mybatis配置
+###############################################################
+
+###############################################################
+# mybatisPlus-pagehelper配置
+################################################################
+pagehelper:
+  helper-dialect: MYSQL # 支持的数据库
+  reasonable: true #是否合理化分页,及默认从第一页开始
+  support-methods-arguments: true #是否支持参数传递过来分页
+  params: count=countSql #将page封装成对象
+###############################################################
+#Server服务端配置
+################################################################
+server:
+  port: 9999 #配置api端口号
+#  context-path: /Liucg #配置context-path，一般来说这个配置在正式发布的时候不配置
+#  error:
+#    path: /error #错误页，指定错误发生时，跳转URL--->BasicErrorController
+  servlet:
+    session:
+      timeout: 60 #session 最大超时时间（分钟），默认为30分钟
+#  address: 192.168.30.70 #该服务绑定IP地址，启动服务器是如本机不是该IP地址则抛出异常启动失败 #只有特殊需求的情况下才配置，具体根据各自的业务来设置
+####################################################################
+# server -tomcat相关常用配置
+####################################################################
+  tomcat:
+    max-threads: 180 # tomcat最大线程数，默认为200,(建议配置150-200之间)
+    uri-encoding: UTF-8 # tomcat的uri编码
+    #存放tomcat的日志、Dump等文件的临时文件夹，默认为系统的temp文件夹
+    #（如：C:\User\liuchenggen\AppDate\Local\Temp）
+#    basedir:
+#      H:/springboot-tomcat-tmp
+    #打开Tomcat的Acess日志，并可以设置日志格式的方法
+#    accesslog:
+#      encoding: true
+#      pattern: 
+#      directory: #accesslog目录，默认在basedir/logs
+###############################################################
+# log配置 升级
+###############################################################
+logging:
+  config: classpath:logback-spring.xml
+#  level:
+#    org.springframework.web: INFO
+#    com.github.binarywang.demo.wx.cp: DEBUG
+#    me.chanjar.weixin: DEBUG
+###############################################################
+# 微信接口配置
+############################################################### 
+wechat:
+  cp:
+    corpId: wxc5771e1e819ee85b
+    appConfigs:
+      - agentId: 1000011
+        secret: 614FFRtsLPD4tpRv_9d6zR1ATQ-rjsLVGX0hKbHOXzs
+        token: weixin
+        aesKey: RMEHhPi2OgVVMPSRVsfStqWlzB6JGGemL1OKMumq7j1

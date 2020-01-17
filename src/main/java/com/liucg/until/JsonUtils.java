@@ -2,9 +2,11 @@ package com.liucg.until;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * 
@@ -22,6 +24,11 @@ public class JsonUtils {
 
     // 定义jackson对象
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    /*WX json*/
+    static {
+    	MAPPER.setSerializationInclusion(Include.NON_NULL);
+    	MAPPER.configure(SerializationFeature.INDENT_OUTPUT, Boolean.TRUE);
+    }
 
     /**
      * 将对象转换成json字符串。
@@ -75,6 +82,20 @@ public class JsonUtils {
 		}
     	
     	return null;
+    }
+    /**
+     * WX json转换
+     * @param obj
+     * @return
+     */
+    public static String toJson(Object obj) {
+      try {
+        return MAPPER.writeValueAsString(obj);
+      } catch (JsonProcessingException e) {
+        e.printStackTrace();
+      }
+
+      return null;
     }
     
 }
