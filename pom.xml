@@ -18,11 +18,11 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<weixin-java-cp.version>3.6.0</weixin-java-cp.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.locales>zh_CN</project.build.locales>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.locales>zh_CN</project.build.locales>
 	</properties>
 	<dependencies>
 		<!-- SPring Boot -->
@@ -89,6 +89,12 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
+		<!-- sqlserver -->
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>sqljdbc4</artifactId>
+			<version>4.0</version>
+		</dependency>
 		<!-- velocity 自动生成代码 -->
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
@@ -136,22 +142,40 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.58</version>
 		</dependency>
+		<!-- alibab druid -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid-spring-boot-starter</artifactId>
+			<version>1.1.10</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+			<version>2.5.4</version>
+		</dependency>
 		<!-- 消息推送 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
 		<!-- 微信工具包 -->
-		 <dependency>
-            <groupId>com.github.binarywang</groupId>
-            <artifactId>weixin-java-cp</artifactId>
-            <version>${weixin-java-cp.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>com.github.binarywang</groupId>
+			<artifactId>weixin-java-cp</artifactId>
+			<version>${weixin-java-cp.version}</version>
+		</dependency>
 		<!-- 工具类 -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.7</version>
+		</dependency>
+		<!-- baidu文字识别sdk -->
+		<dependency>
+			<groupId>com.baidu.aip</groupId>
+			<artifactId>java-sdk</artifactId>
+			<version>4.11.0</version>
 		</dependency>
 		<!-- 排除是starter-web 中tomcat的依赖 -->
 		<dependency>

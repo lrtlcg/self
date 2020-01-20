@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.liucg.config.WxCpConfiguration;
+import com.liucg.until.JsonUtils;
 
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.WxCpXmlMessage;
@@ -57,16 +58,17 @@ public class WxPortalController {
                      @RequestParam("msg_signature") String signature,
                      @RequestParam("timestamp") String timestamp,
                      @RequestParam("nonce") String nonce) {
-//    this.logger.info("\n接收微信请求：[signature=[{}], timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
-//        signature, timestamp, nonce, requestBody);
+    this.logger.info("\n接收微信请求：[signature=[{}], timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
+        signature, timestamp, nonce, requestBody);
 
     final WxCpService wxCpService = WxCpConfiguration.getCpService(agentId);
     WxCpXmlMessage inMessage = WxCpXmlMessage.fromEncryptedXml(requestBody, wxCpService.getWxCpConfigStorage(),
         timestamp, nonce, signature);
-   // this.logger.debug("\n消息解密后内容为：\n{} ", JsonUtils.toJson(inMessage));
-    this.logger.info("\\**********************：\\n{}",inMessage.getContent());
-    inMessage.setContent("你好,我要测试");
+    this.logger.debug("\n消息解密后内容为：\n{} ", JsonUtils.toJson(inMessage));
+//    inMessage.setContent("你好,我要测试");
+
     WxCpXmlOutMessage outMessage = this.route(agentId, inMessage);
+
     if (outMessage == null) {
       return "";
     }

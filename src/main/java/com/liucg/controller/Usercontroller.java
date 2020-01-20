@@ -1,7 +1,8 @@
 package com.liucg.controller;
 
-
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ import com.liucg.service.Userservice;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author liucg
@@ -35,8 +36,10 @@ import com.liucg.service.Userservice;
 public class Usercontroller {
 	@Autowired
 	private Userservice userService;
+
 	/**
 	 * 进入列表页面
+	 * 
 	 * @return
 	 */
 	@RequestMapping("/inUserList")
@@ -46,148 +49,166 @@ public class Usercontroller {
 
 	/**
 	 * 用户列表
-	 * @param limit 数量
+	 * 
+	 * @param limit  数量
 	 * @param offset 页码
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping("/listbyParam")
-	public Map<String,Object> userList(@RequestParam(value = "limit",required = true)Integer limit,
-			@RequestParam(value = "offset",required = true)Integer offset,
-			//@RequestParam(value = "filter",required = true)Integer filter,
-			@RequestParam(value = "search",required = true)String search){
-		System.out.println("**************"+search);
-		if (search==null) {
-			search="";
+	public Map<String, Object> userList(@RequestParam(value = "limit", required = true) Integer limit,
+			@RequestParam(value = "offset", required = true) Integer offset,
+			// @RequestParam(value = "filter",required = true)Integer filter,
+			@RequestParam(value = "search", required = true) String search) {
+		System.out.println("**************" + search);
+		if (search == null) {
+			search = "";
 		}
-		PageHelper.startPage(offset, limit);//物理分页
-		List<User> users=userService.ListByParmarm(search);//获取所有用户数据
-		PageInfo<User> pageInfo=new PageInfo<User>(users,limit);
-		Long total=pageInfo.getTotal();
-		Map<String,Object> resultMap=new HashMap<String, Object>();
-		resultMap.put("data",users);
+		PageHelper.startPage(offset, limit);// 物理分页
+		List<User> users = userService.ListByParmarm(search);// 获取所有用户数据
+		PageInfo<User> pageInfo = new PageInfo<User>(users, limit);
+		Long total = pageInfo.getTotal();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("data", users);
 		resultMap.put("total", total);
 		return resultMap;
 	}
+
 	/**
 	 * 用户列表
-	 * @param limit 数量
+	 * 
+	 * @param limit  数量
 	 * @param offset 页码
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping("/list")
-	public Map<String,Object> userList(@RequestParam(value = "limit",required = true)Integer limit,
-			@RequestParam(value = "offset",required = true)Integer offset){
-		PageHelper.startPage(offset, limit);//物理分页
-		List<User> users=userService.list();//获取所有用户数据
-		PageInfo<User> pageInfo=new PageInfo<User>(users,limit);
-		Long total=pageInfo.getTotal();
-		Map<String,Object> resultMap=new HashMap<String, Object>();
-		resultMap.put("data",users);
+	public Map<String, Object> userList(@RequestParam(value = "limit", required = true) Integer limit,
+			@RequestParam(value = "offset", required = true) Integer offset) {
+		PageHelper.startPage(offset, limit);// 物理分页
+		List<User> users = userService.list();// 获取所有用户数据
+		PageInfo<User> pageInfo = new PageInfo<User>(users, limit);
+		Long total = pageInfo.getTotal();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("data", users);
 		resultMap.put("total", total);
 		return resultMap;
 	}
+
 	/**
 	 * 增加用户(通过form表单)
+	 * 
 	 * @param id
 	 * @param map
 	 * @param user
 	 * @return
 	 */
-	@RequestMapping(value = "/addUser",method = RequestMethod.POST)
-	public String add_user_DB(String id,ModelMap map,User user) {
-		String acc = userService.accNum();//设置流水号用户名称
+	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
+	public String add_user_DB(String id, ModelMap map, User user) {
+		String acc = userService.accNum();// 设置流水号用户名称
 		user.setAcc(acc);
-		user.setCreateDate(LocalDateTime.now());
+		// localDateTime 转换成date
+		LocalDateTime localDateTime = LocalDateTime.now();
+		Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+		user.setCreateDate(date);
 		// 设置初始密码为帐号,并进行加密
 		String p1String = DigestUtils.md5DigestAsHex(acc.getBytes());
-		user.setPwd(p1String);//设置密码
+		user.setPwd(p1String);// 设置密码
 		user.setStatus("启用");
-		userService.save(user);//新增用户
+		userService.save(user);// 新增用户
 		return "redirect:/user/inUserList";
 	}
+
 	/**
 	 * 增加用户 ajax方式
+	 * 
 	 * @param request
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/addUser_ajax",method = RequestMethod.POST)
-	public Map<String, Object> add_user_ajax(HttpServletRequest request){
-		//System.out.println("success");
-		String name=request.getParameter("name");
-		String status=request.getParameter("status");
-		//System.out.println("-------------------------------status:"+status);
-		User user=new User();
+	@RequestMapping(value = "/addUser_ajax", method = RequestMethod.POST)
+	public Map<String, Object> add_user_ajax(HttpServletRequest request) {
+		// System.out.println("success");
+		String name = request.getParameter("name");
+		String status = request.getParameter("status");
+		// System.out.println("-------------------------------status:"+status);
+		User user = new User();
 		user.setName(name);
 		user.setStatus(status);
-		String acc = userService.accNum();//设置流水号用户名称
+		String acc = userService.accNum();// 设置流水号用户名称
 		user.setAcc(acc);
-		user.setCreateDate(LocalDateTime.now());
+		// localDateTime 转换成date
+		LocalDateTime localDateTime = LocalDateTime.now();
+		Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+		user.setCreateDate(date);
 		// 设置初始密码为帐号,并进行加密
 		String p1String = DigestUtils.md5DigestAsHex(acc.getBytes());
-		user.setPwd(p1String);//设置密码
-		//user.setStatus("启用");
-		userService.save(user);//新增用户
-		
-		Map<String,Object>map=new HashMap<String, Object>();
+		user.setPwd(p1String);// 设置密码
+		// user.setStatus("启用");
+		userService.save(user);// 新增用户
+
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("msg", "success");
 		return map;
 	}
+
 	/**
 	 * 通过id获取用户
+	 * 
 	 * @param userid
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/getUserByid",method = RequestMethod.GET)
-	public Map<String,Object> getUserByid(String userid){
-		Map<String,Object> resultMap=new HashMap<String, Object>();
-		Long id=Long.parseLong(userid);
-		User user=userService.getById(id);
+	@RequestMapping(value = "/getUserByid", method = RequestMethod.GET)
+	public Map<String, Object> getUserByid(String userid) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Long id = Long.parseLong(userid);
+		User user = userService.getById(id);
 		resultMap.put("user", user);
 		return resultMap;
 	}
+
 	/**
 	 * 更新用户
+	 * 
 	 * @param request
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value="/update_User",method = RequestMethod.POST)
-	public Map<String, Object> update_user(HttpServletRequest request){
-		String name=request.getParameter("name");
-		String pwd=request.getParameter("pwd");
-		Integer id=Integer.parseInt(request.getParameter("id"));
-		String status=request.getParameter("status");
-		User user=new User();
+	@RequestMapping(value = "/update_User", method = RequestMethod.POST)
+	public Map<String, Object> update_user(HttpServletRequest request) {
+		String name = request.getParameter("name");
+		String pwd = request.getParameter("pwd");
+		Integer id = Integer.parseInt(request.getParameter("id"));
+		String status = request.getParameter("status");
+		User user = new User();
 		user.setId(id);
 		user.setName(name);
 		String p1String = DigestUtils.md5DigestAsHex(pwd.getBytes());
 		user.setPwd(p1String);
 		user.setStatus(status);
 		userService.updateById(user);
-		Map<String,Object>map=new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("msg", "success");
 		return map;
 	}
+
 	/**
 	 * 通过id删除用户
+	 * 
 	 * @param ids
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value ="/deleteUserByids",method = RequestMethod.GET)
-	public Map<String,Object> deleteUserByids(String ids){
+	@RequestMapping(value = "/deleteUserByids", method = RequestMethod.GET)
+	public Map<String, Object> deleteUserByids(String ids) {
 //		System.out.println("******************************:"+ids);
-		String[] users=ids.split(",");
-		for(int i=0;i<users.length;i++) {
-			userService.removeById(users[i]);//通过id删除用户
+		String[] users = ids.split(",");
+		for (int i = 0; i < users.length; i++) {
+			userService.removeById(users[i]);// 通过id删除用户
 		}
-		Map<String,Object>map=new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("msg", "success");
 		return map;
 	}
 }
-

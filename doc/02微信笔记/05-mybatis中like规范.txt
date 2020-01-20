@@ -1,0 +1,53 @@
+oracle数据库：
+Java代码  收藏代码
+
+    SELECT  
+    *  
+    FROM  
+    user  
+    WHERE  
+    name like CONCAT('%',#{name},'%')  
+
+
+或
+Java代码  收藏代码
+
+    SELECT  
+    *  
+    FROM  
+    user  
+    WHERE  
+    name like '%'||#{name}||'%'  
+
+
+SQLServer数据库：
+Java代码  收藏代码
+
+    SELECT  
+    *  
+    FROM  
+    user  
+    WHERE  
+    name like '%'+#{name}+'%'  
+
+
+mysql数据库：
+Java代码  收藏代码
+
+    SELECT  
+    *  
+    FROM  
+    user  
+    WHERE  
+    name like CONCAT('%',#{name},'%')  
+
+
+DB2数据库：
+Java代码  收藏代码
+
+    SELECT  
+    *  
+    FROM  
+    user  
+    WHERE  
+    name like CONCAT('%',#{name},'%')  
