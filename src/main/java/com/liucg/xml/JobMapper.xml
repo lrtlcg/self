@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liucg.dao.JobMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.liucg.pojo.Job">
+        <id column="id" property="id" />
+        <result column="companyName" property="companyName" />
+        <result column="companyAddr" property="companyAddr" />
+        <result column="companyInfo" property="companyInfo" />
+        <result column="jobName" property="jobName" />
+        <result column="jobAddr" property="jobAddr" />
+        <result column="jobInfo" property="jobInfo" />
+        <result column="webUrl" property="webUrl" />
+        <result column="salaryMax" property="salaryMax" />
+        <result column="salaryMin" property="salaryMin" />
+        <result column="jobTime" property="jobTime" />
+    </resultMap>
+
+</mapper>

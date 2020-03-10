@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liucg.dao.GoodMsgMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.liucg.pojo.GoodMsg">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="price" property="price" />
+        <result column="webUrl" property="webUrl" />
+        <result column="other" property="other" />
+    </resultMap>
+
+</mapper>

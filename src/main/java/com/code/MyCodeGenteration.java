@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 public class MyCodeGenteration {
 	public static void main(String[] args) {
 		MyCodeGenteration.Zcode(new String[] { "bus_" },
-				new String[] { "bus_reportUser"});
+				new String[] { "bus_goodMsg"});
 		//new String[] { "sys_stat","sys_user", "sys_role", "sys_user_role", "sys_account", "sys_pros", "sys_role_pros" });
 	}
 
